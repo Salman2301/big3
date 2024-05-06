@@ -1,0 +1,8 @@
+:root {
+	--color-black: #000;
+	--color-white: #fff;
+	--color-accent: #1e1e1e;
+	--color-drizzy: #c0760b;
+	--color-kdot: #60ac00;
+	--color-active: var(--color-brown);
+}
