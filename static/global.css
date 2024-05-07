@@ -7,6 +7,10 @@
 	--color-active: var(--color-brown);
 }
 
+* {
+  box-sizing: border-box;
+}
+
 h1, p, span, div {
 	color: white;
 }

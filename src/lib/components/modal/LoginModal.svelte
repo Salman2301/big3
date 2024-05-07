@@ -1,20 +1,15 @@
 <script lang="ts">
-	import { supabase } from '$lib/supabaseClient';
+	import { loginWithGoogle } from '$lib/auth';
 	import GoogleButton from '../button/GoogleButton.svelte';
 	import Modal from './Modal.svelte';
 
-	function handleGoogle() {
-		supabase.auth.signInWithOAuth({
-			provider: 'google'
-		});
-	}
 </script>
 
 <Modal>
 	<h1 slot="header">Login page</h1>
 	<div class="content">
 		<div class="button-action">
-			<GoogleButton on:click={handleGoogle} />
+			<GoogleButton on:click={loginWithGoogle} />
 			<p>OR</p>
 			<button class="btn-guest">Guest mode</button>
 		</div>

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { checkUserComplete } from "$lib/auth";
+
   export let team: "drizzy" | "kdot" = "drizzy";
   export let voted: boolean = false;
 </script>
@@ -8,7 +10,7 @@
   class:voted={voted}
 >
   <img src="/images/{team}.png" alt="profile {team}">
-  <button style="background-color: var(--color-{team})">
+  <button style="background-color: var(--color-{team})" on:click={checkUserComplete}>
     <svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M12.7962 8.15674H1.17508C0.13016 8.15674 -0.392301 6.89209 0.345004 6.15479L6.15555 0.344238C6.61454 -0.114746 7.35672 -0.114746 7.81082 0.344238L13.6214 6.15479C14.3636 6.89209 13.8411 8.15674 12.7962 8.15674Z" fill="white"/>
     </svg>

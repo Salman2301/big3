@@ -1,27 +1,90 @@
 <script lang="ts">
+	import { currentUserState, getUserMe } from '$lib/auth/index.js';
 	import VoteSlider from '$lib/components/VoteSlider.svelte';
 	import MiniCard from '$lib/components/card/MiniCard.svelte';
+	import Chat from '$lib/components/chat/Chat.svelte';
 	import VoteModal from '$lib/components/modal/VoteModal.svelte';
+	import LoginModal from '$lib/components/modal/LoginModal.svelte';
+	import TeamModal from '$lib/components/modal/TeamModal.svelte';
+	import { currentModal } from '$lib/components/modal/modal.store.js';
 	import { onMount } from 'svelte';
+	import { supabase } from '$lib/supabaseClient.js';
+	import UsernameModal from '$lib/components/modal/UsernameModal.svelte';
+	import type { Tables } from '$lib/database.types.js';
 
 	export let data;
+	let votes: Tables<"votes"> = getDummyVotes();
+	onMount(async ()=>{
+		setVoteFromDb();
+		const state = await currentUserState();
 
-	onMount(()=>{
-		// console.log(data);
-		// console.log(data.votes);
-	})
+		if( !(state === "NOT_REGISTER" || state === "COMPLETED" ) ) {
+			if( state === "USERNAME" ) $currentModal = "username"
+			else if( state === "TEAM_SELECTION" ) $currentModal = "team"
+			else if( state === "VOTE" ) $currentModal = "vote"
+		}
+	});
+
+	async function setVoteFromDb() {
+		const { data } = await supabase.from('votes').select();
+		if (Array.isArray(data) && data.length >= 1) votes = data[0];
+	}
+
+
+	supabase.channel('custom-update-channel')
+		.on(
+			'postgres_changes',
+			{ event: 'UPDATE', schema: 'public', table: 'votes' },
+			(payload) => {
+				setVoteFromDb()
+			}
+		)
+		.subscribe();
+
+	function getDummyVotes() {
+		return {
+			total: 0,
+			totalKdot: 0,
+			totalDrizzy: 0,
+
+			totalImpactDrizzy: 0,
+			totalCreativityDrizzy: 0,
+			totalDeliveryDrizzy: 0,
+			totalTechnicalityDrizzy: 0,
+			totalRebuttalDrizzy: 0,
+			totalStrategyDrizzy: 0,
+
+			totalCreativityKdot: 0,
+			totalDeliveryKdot: 0,
+			totalImpactKdot: 0,
+			totalRebuttalKdot: 0,
+			totalStrategyKdot: 0,
+			totalTechnicalityKdot: 0,
+
+			id: 1,
+			created_at: ""
+		};
+	}
 </script>
 
-<VoteModal />
+{#if $currentModal === "vote"}
+	<VoteModal />
+{:else if $currentModal === "login"}
+	<LoginModal />
+	{:else if $currentModal === "username"}
+		<UsernameModal />
+{:else if $currentModal === "team"}
+	<TeamModal />
+{/if}
 
 <div class="container">
 	<div class="vote-content">
 		<div class="vote-major-content">
 			<MiniCard team="drizzy" />
 			<VoteSlider
-				label="{data.votes.drizzy + data.votes.kdot} votes"
-				drizzyVotes={data.votes.drizzy}
-				kdotVotes={data.votes.kdot}
+				label="{votes.total} votes"
+				drizzyVotes={votes.totalDrizzy}
+				kdotVotes={votes.totalKdot}
 			/>
 			<MiniCard team="kdot" />
 		</div>
@@ -29,60 +92,42 @@
 			<VoteSlider
 				size="sm"
 				label="Impact"
+				drizzyVotes={votes.totalImpactDrizzy}
+				kdotVotes={votes.totalImpactKdot}
 			/>
 			<VoteSlider
 				size="sm"
 				label="Creative"
+				drizzyVotes={votes.totalCreativityDrizzy}
+				kdotVotes={votes.totalCreativityKdot}
 			/>
 			<VoteSlider
 				size="sm"
 				label="Technicality"
+				drizzyVotes={votes.totalTechnicalityDrizzy}
+				kdotVotes={votes.totalTechnicalityKdot}
 			/>
 			<VoteSlider
 				size="sm"
 				label="Rebuttal"
+				drizzyVotes={votes.totalRebuttalDrizzy}
+				kdotVotes={votes.totalRebuttalKdot}
+			/>
+			<VoteSlider
+				size="sm"
+				label="Delivery"
+				drizzyVotes={votes.totalDeliveryDrizzy}
+				kdotVotes={votes.totalDeliveryKdot}
 			/>
 			<VoteSlider
 				size="sm"
 				label="Strategy"
+				drizzyVotes={votes.totalStrategyDrizzy}
+				kdotVotes={votes.totalStrategyKdot}
 			/>
 		</div>
 	</div>
-
-	<div class="sidebar-content">
-		<h1>Chat</h1>
-		<div class="chat-content">
-			<div class="chat-message">
-				
-				<div class="chat-message-content">
-					<span class="chat-message-content-team">
-						username
-					</span>
-					This is the content of the chat
-				</div>
-
-				<div class="chat-message-content">
-					<span class="chat-message-content-team team-kdot">
-						username
-					</span>
-					This is the content of the chat
-				</div>
-				
-
-			</div>
-
-			<div class="chat-input">
-				<textarea>
-
-				</textarea>
-				<button>
-					<span></span>
-					Send
-				</button>
-			</div>
-		</div>
-	</div>
-
+	<Chat />
 </div>
 
 <style lang="postcss">
@@ -98,12 +143,6 @@
 		justify-content: space-between;
 	}
 
-	.sidebar-content {
-		height: 100vh;
-		width: 340px;
-		@apply bg-accent;
-	}
-
 	.vote-major-content {
 		display: flex;
 		justify-content: space-between;
@@ -115,6 +154,7 @@
 
 	.vote-content {
 		width: 100%;
+		overflow: auto
 	}
 
 	.detail-vote {
@@ -122,45 +162,4 @@
 		@apply gap-8;
 	}
 
-	.sidebar-content h1 {
-		@apply text-2xl text-center;
-		padding: 10px;
-	}
-
-	.chat-content {
-		@apply flex flex-col;
-		@apply justify-between items-center;
-		height: calc(100vh - 60px);
-	}
-
-	.chat-message {
-		width: 100%;
-		padding: 0px 10px;
-	}
-
-	.chat-message-content-team {
-		@apply  font-bold text-drizzy;
-	}
-
-	.team-kdot {
-		@apply text-kdot;
-	}
-	.chat-message-content-team,
-	.chat-message-content {
-		font-size: 14px;
-	}
-
-	.chat-input {
-		@apply flex items-center flex-col;
-		width: 230px;
-	}
-
-	.chat-input textarea {
-		width: 100%;
-		background-color: rgba( 255, 255, 255, 0.3 );
-		border-radius: 6px;
-	}
-	.chat-input button {
-		align-self: flex-end;
-	}
 </style>

@@ -1,14 +1,32 @@
 <script lang="ts">
+	import { getUserId, refreshSession } from "$lib/auth";
+	import { supabase } from "$lib/supabaseClient";
 	import Modal from "./Modal.svelte";
-
+	import { currentModal } from "./modal.store";
+  
+  async function nextState(team: "drizzy" | "kdot") {
+    const { data, error } = await supabase.from("user_data").update({
+      state_next: "VOTE",
+      team
+    }).eq("user_id", await getUserId());
+    if(error) {
+      console.error(error);
+      return;
+    }
+    refreshSession();
+    $currentModal = "vote";
+  }
  
+
 </script>
 
 
 <Modal>
 	<h1 slot="header">Select a team</h1>
 	<div class="content">
-    <button>
+    <button
+      on:click={()=>nextState("drizzy")}
+    >
       <img src="/images/drizzy.png" alt="team drizzy drake">
       <div class="footer">
         <svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -18,7 +36,9 @@
       </div>
     </button>
     
-    <button>
+    <button
+      on:click={()=>nextState("kdot")}
+    >
       <img src="/images/kdot.png" alt="team kendrick lamar">
       <div class="footer kdot">
         <svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg">

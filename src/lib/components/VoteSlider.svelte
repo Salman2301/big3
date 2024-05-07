@@ -1,14 +1,15 @@
 <script lang="ts">
-	export let drizzyVotes: number = 0;
-	export let kdotVotes: number = 0;
-	export let percent: number = getPercent();
+	export let drizzyVotes: number | null = 0;
+	export let kdotVotes: number | null = 0;
+	export let percent: number = 50;
 	export let label: string = 'Label';
 
 	export let size: 'bg' | 'sm' = 'bg';
-
+	$: if( drizzyVotes || kdotVotes || true ) getPercent();
 	function getPercent() {
-		if( drizzyVotes === 0 && kdotVotes === 0 ) return 50;
-		return Math.round((drizzyVotes / (drizzyVotes+kdotVotes)) * 10000) / 100;
+		if( (drizzyVotes === 0 && kdotVotes === 0)||
+	!(typeof drizzyVotes === "number" && typeof kdotVotes === "number") ) return 50;
+		percent = Math.round((drizzyVotes / (drizzyVotes+kdotVotes)) * 10000) / 100;
 	}
 </script>
 
@@ -66,6 +67,8 @@
 		justify-content: flex-start;
 		align-items: center;
 		position: relative;
+
+		transition: width 1s ease-in-out;
 	}
 
 	.progress-container.size-sm {

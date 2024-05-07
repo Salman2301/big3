@@ -1,19 +1,29 @@
 <script lang="ts">
+	import { clickOutside } from "$lib/action/outsideClick";
+	import { currentModal } from "./modal.store";
+
 	export let showModal: boolean = true;
   export let height: number = 400;
 	let dialog: HTMLDialogElement;
-
+	
 	$: if (dialog && showModal) dialog.showModal();
+
+	function handleClose() {
+		showModal = false;
+		$currentModal = null;
+	}
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <dialog
 	bind:this={dialog}
-	on:close={() => (showModal = false)}
-	on:click|self={() => dialog.close()}
+	on:close={handleClose}
   style="height:{height}px"
+	use:clickOutside
+	on:outsideclick={()=> dialog.close()}
 >
+<!-- on:click|self={() => dialog.close()} -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div on:click|stopPropagation>
     <div class="title">
@@ -23,7 +33,6 @@
           <path d="M24.75 8.25L8.25 24.75" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M8.25 8.25L24.75 24.75" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-                              
       </button>
     </div>
 

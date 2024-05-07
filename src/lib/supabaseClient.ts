@@ -1,3 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import type { Database } from './database.types';
+import { env } from '$env/dynamic/public';
 
-export const supabase = createClient('https://xhqayzgoznupxaxtwgix.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhocWF5emdvem51cHhheHR3Z2l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTUwNDA4MDYsImV4cCI6MjAzMDYxNjgwNn0.wfUaCpZ-Dq3ZmaDx7DhJ1WmdmXbBmCrBKBCsAq9vFOs');
+export const supabase = createClient<Database>(env.PUBLIC_SUPABASE_PUBLIC_URL, env.PUBLIC_SUPABASE_ANON_KEY);
