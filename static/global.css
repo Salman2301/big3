@@ -6,3 +6,7 @@
 	--color-kdot: #60ac00;
 	--color-active: var(--color-brown);
 }
+
+h1, p, span, div {
+	color: white;
+}
