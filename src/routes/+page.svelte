@@ -1,21 +1,48 @@
 <script lang="ts">
 	import VoteSlider from '$lib/components/VoteSlider.svelte';
 	import MiniCard from '$lib/components/card/MiniCard.svelte';
+	import { onMount } from 'svelte';
+
+	export let data;
+
+	onMount(()=>{
+		// console.log(data);
+		// console.log(data.votes);
+	})
 </script>
 
 <div class="container">
 	<div class="vote-content">
 		<div class="vote-major-content">
 			<MiniCard team="drizzy" />
-			<VoteSlider />
+			<VoteSlider
+				label="{data.votes.drizzy + data.votes.kdot} votes"
+				drizzyVotes={data.votes.drizzy}
+				kdotVotes={data.votes.kdot}
+			/>
 			<MiniCard team="kdot" />
 		</div>
 		<div class="detail-vote">
-			<VoteSlider size="sm" label="Impact" />
-			<VoteSlider size="sm" label="Creative" />
-			<VoteSlider size="sm" label="Technicality" />
-			<VoteSlider size="sm" label="Rebuttal" />
-			<VoteSlider size="sm" label="Strategy" />
+			<VoteSlider
+				size="sm"
+				label="Impact"
+			/>
+			<VoteSlider
+				size="sm"
+				label="Creative"
+			/>
+			<VoteSlider
+				size="sm"
+				label="Technicality"
+			/>
+			<VoteSlider
+				size="sm"
+				label="Rebuttal"
+			/>
+			<VoteSlider
+				size="sm"
+				label="Strategy"
+			/>
 		</div>
 	</div>
 

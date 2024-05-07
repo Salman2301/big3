@@ -1,10 +1,15 @@
 <script lang="ts">
 	export let drizzyVotes: number = 0;
 	export let kdotVotes: number = 0;
-	export let percent: number = 50;
+	export let percent: number = getPercent();
 	export let label: string = 'Label';
 
 	export let size: 'bg' | 'sm' = 'bg';
+
+	function getPercent() {
+		if( drizzyVotes === 0 && kdotVotes === 0 ) return 50;
+		return Math.round((drizzyVotes / (drizzyVotes+kdotVotes)) * 10000) / 100;
+	}
 </script>
 
 <div class="progress-label">
@@ -14,10 +19,10 @@
 
 	<div class="progress-container" class:size-sm={size === 'sm'}>
 		<div class="progress progress-drizzy" style="width: {percent}%">
-			<span class="vote-count">{drizzyVotes} <span class="vote">votes</span></span>
+			<span class="vote-count">{drizzyVotes} ({percent}%)<span class="vote">votes</span></span>
 		</div>
 		<div class="progress progress-kdot" style="width: {100 - percent}%">
-			<span class="vote-count">{kdotVotes} <span class="vote">votes</span></span>
+			<span class="vote-count">{kdotVotes} ({100-percent}%)<span class="vote">votes</span></span>
 		</div>
 	</div>
 </div>
@@ -27,6 +32,7 @@
 		width: 100%;
 		display: flex;
 		justify-content: center;
+		color: black;
 	}
 	.label.size-sm {
 		font-size: 12px;
@@ -68,7 +74,7 @@
 
 	.vote-count {
 		z-index: 100;
-		width: 100px;
+		width: 220px;
 		position: absolute;
 		text-align: center;
 
@@ -76,6 +82,13 @@
 		align-items: center;
 		justify-content: center;
 		gap: 4px;
+
+		place-content: flex-start;
+		padding: 10px;
+	}
+
+	.progress-kdot .vote-count {
+		place-content: flex-end;
 	}
 
 	/* .progress-drizzy {
@@ -87,6 +100,8 @@
 		background-color: var(--color-kdot);
 		justify-content: flex-end;
 		width: 100%;
+
+		text-align: left;
 
 		/* border-top-right-radius: 60px;
     border-bottom-right-radius: 60px; */
