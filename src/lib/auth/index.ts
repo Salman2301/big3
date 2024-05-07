@@ -71,9 +71,14 @@ function sleep(ms: number) {
 }
 
 export async function logout() {
-  const { error } = await supabase.auth.signOut()
-
-
+  try {
+    const { error } = await supabase.auth.signOut()
+    refreshSession();
+    window.location.href = window.location.href;
+  }
+  catch (e) {
+    console.error(e)
+  }
 }
 
 export async function checkUserComplete() {

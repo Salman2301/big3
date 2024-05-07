@@ -4,7 +4,7 @@
 
 	import { onMount } from 'svelte';
 	import { supabase } from '$lib/supabaseClient';
-	import { getTeam, getUserData } from '$lib/auth';
+	import { getTeam, getUserData, logout } from '$lib/auth';
 	import { clickOutside } from '$lib/action/outsideClick';
 	import { currentUser } from '$lib/auth/auth.store';
 	
@@ -99,7 +99,7 @@
 
 		{#if showPopup}
 			<div class="popup-container">
-				<button>Logout</button>
+				<button on:click={()=>logout()}>Logout</button>
 			</div>
 		{/if}
 	</div>
