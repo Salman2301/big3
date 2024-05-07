@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let showModal: boolean = true;
-
+  export let height: number = 400;
 	let dialog: HTMLDialogElement;
 
 	$: if (dialog && showModal) dialog.showModal();
@@ -12,6 +12,7 @@
 	bind:this={dialog}
 	on:close={() => (showModal = false)}
 	on:click|self={() => dialog.close()}
+  style="height:{height}px"
 >
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div on:click|stopPropagation>
@@ -38,7 +39,6 @@
 		border: none;
 		padding: 0;
     width: 720px;
-    height: 400px;
     min-width: 380px;
 	}
 	dialog::backdrop {
