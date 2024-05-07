@@ -48,7 +48,10 @@ export function refreshSession() {
 
 export function loginWithGoogle() {
   supabase.auth.signInWithOAuth({
-    provider: 'google'
+    provider: 'google',
+    options: {
+      redirectTo: new URL(window.location.href).origin,
+    }
   });
 }
 
