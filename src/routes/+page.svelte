@@ -1,7 +1,7 @@
 <script lang="ts">
 	import VoteSlider from '$lib/components/VoteSlider.svelte';
 	import MiniCard from '$lib/components/card/MiniCard.svelte';
-	import Login from '$lib/components/modal/LoginModal.svelte';
+	import TeamModal from '$lib/components/modal/TeamModal.svelte';
 	import { onMount } from 'svelte';
 
 	export let data;
@@ -12,7 +12,7 @@
 	})
 </script>
 
-<Login />
+<TeamModal />
 
 <div class="container">
 	<div class="vote-content">
